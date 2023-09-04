@@ -6,7 +6,10 @@ const validationRules = request => { return } // return or throw based on the au
 const cloud_config = {
     fields: {},
     requireUser: false,
-    rateLimit: { requestTimeWindow: 1 * 60 * 1000, requestCount: 10 } // 10 request per minute
+    rateLimit: { 
+        requestTimeWindow: 1 * 60 * 1000, // 1 min
+        requestCount: 10 
+    }
 }
 
 Parse.Cloud.define("getTime", function (request) {
@@ -14,3 +17,24 @@ Parse.Cloud.define("getTime", function (request) {
     var date = new Date()
     return date
 }, cloud_config, validationRules)
+
+
+// SEND EMAIL
+Parse.Cloud.define("SendEmail", function (request) {
+    const { params, user } = request
+
+    Parse.Cloud.sendEmail({
+        templateName: "customEmail",
+        placeholders: { username: user.username },
+        user: user
+    });
+})
+
+
+// TRIGGERS
+Parse.Cloud.beforeSave(Parse.User, request => {
+    const user = request.object;
+    if (!user.get("email")) {
+      throw "Every user must have an email address.";
+    }
+  });
