@@ -25,8 +25,11 @@ const api = new ParseServer({
   allowOrigin: "*",
   logLevel: 'error',
 
-  // Schema
-  schema: { definitions: [constants.USER_SCHEMA] },
+  // Schema, Security
+  schema: { definitions: [constants.USER_SCHEMA, constants.LIVE_SCHEMA] },
+  allowClientClassCreation: true,
+  enableAnonymousUsers: true,
+  revokeSessionOnPasswordChange: true,
 
   // S3
   fileUpload: {
@@ -52,13 +55,6 @@ const api = new ParseServer({
     doNotAllowUsername: true,
     maxPasswordHistory: 5
   },
-
-  // Security
-  allowClientClassCreation: false,
-  enableAnonymousUsers: true,
-  revokeSessionOnPasswordChange: true,
-  classLevelPermissions: constants.PERMISSIONS,
-
 
   // Email
   /*
