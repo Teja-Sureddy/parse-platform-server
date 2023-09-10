@@ -55,8 +55,7 @@ const LIVE_SCHEMA = {
         get: { "*": true },
         create: { "*": true },
         update: { "*": true },
-        delete: { "*": true },
-        protectedFields: {}
+        delete: { "*": true }
     },
 }
 

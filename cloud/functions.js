@@ -2,45 +2,26 @@ const chalk = require('chalk')
 
 
 const validationRules = request => { return } // return or throw based on the authorization
-
-const cloud_config = {
-    fields: {},
-    requireUser: false,
-    rateLimit: {
-        requestTimeWindow: 1 * 60 * 1000, // 1 min
-        requestCount: 10
-    }
-}
+const cloud_config = { requireUser: false, rateLimit: { requestTimeWindow: 1 * 60 * 1000, requestCount: 10 } } // 1 min
 
 Parse.Cloud.define("getTime", function (request) {
-    const { params, user } = request
     var date = new Date()
     return date
 }, cloud_config, validationRules)
 
 
+const paramsConfig = { fields: { text: { required: true, type: String, error: "Text Required." } } }
+
 Parse.Cloud.define("getParams", function (request) {
-    const { params, user } = request
+    const { params } = request
     console.log(params);
     return params
-}, {
-    fields: {
-        text: {
-            required: true, type: String, error: "Text Required."
-        },
-    }
-})
+}, paramsConfig)
 
 
-// SEND EMAIL
-Parse.Cloud.define("SendEmail", function (request) {
-    const { params, user } = request
-
-    Parse.Cloud.sendEmail({
-        templateName: "customEmail",
-        placeholders: { username: user.username },
-        user: user
-    });
+Parse.Cloud.define("getConfig", async function (request) {
+    const config = await Parse.Config.get()
+    return config.attributes
 })
 
 
