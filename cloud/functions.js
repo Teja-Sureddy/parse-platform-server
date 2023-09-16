@@ -2,21 +2,21 @@ const chalk = require('chalk')
 
 
 const validationRules = request => { return } // return or throw based on the authorization
-const cloud_config = { requireUser: false, rateLimit: { requestTimeWindow: 1 * 60 * 1000, requestCount: 10 } } // 1 min
+const getTimeconfig = { requireUser: false, rateLimit: { requestTimeWindow: 1 * 60 * 1000, requestCount: 10 } } // 1 min
 
 Parse.Cloud.define("getTime", function (request) {
     var date = new Date()
     return date
-}, cloud_config, validationRules)
+}, getTimeconfig, validationRules)
 
 
-const paramsConfig = { fields: { text: { required: true, type: String, error: "Text Required." } } }
+const getParamsConfig = { requireUser: true, fields: { text: { required: true, type: String, error: "Text Required." } } }
 
 Parse.Cloud.define("getParams", function (request) {
     const { params } = request
     console.log(params);
     return params
-}, paramsConfig)
+}, getParamsConfig)
 
 
 Parse.Cloud.define("getConfig", async function (request) {
@@ -27,8 +27,15 @@ Parse.Cloud.define("getConfig", async function (request) {
 
 // TRIGGERS
 Parse.Cloud.beforeSave(Parse.User, request => {
-    const user = request.object;
-    if (!user.get("email")) {
-        throw "Every user must have an email address.";
+    const { object } = request;
+    if (!object.get("email")) {
+        throw "Email required.";
+    }
+    else{
+        const acl = new Parse.ACL();
+        acl.setRoleWriteAccess("admin", true);
+        acl.setPublicReadAccess(false);
+        acl.setPublicWriteAccess(false);
+        object.setACL(acl);
     }
 });

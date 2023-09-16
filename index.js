@@ -18,6 +18,7 @@ const api = new ParseServer({
   appName: constants.APP_NAME,
   appId: process.env.APP_ID,
   masterKey: process.env.MASTER_KEY,
+  readOnlyMasterKey: process.env.READ_ONLY_MASTER_KEY,
   publicServerURL: `${process.env.HOST}:${process.env.PORT}${process.env.API_PATH}`,
   databaseURI: process.env.DB_URI,
   cloud: "./cloud/main.js",
@@ -137,14 +138,20 @@ var dashboard = new ParseDashboard({
     {
       appId: process.env.APP_ID,
       masterKey: process.env.MASTER_KEY,
+      readOnlyMasterKey: process.env.READ_ONLY_MASTER_KEY,
       serverURL: `${process.env.HOST}:${process.env.PORT}${process.env.API_PATH}`,
-      appName: constants.APP_NAME
+      appName: constants.APP_NAME,
     },
   ],
   users: [
     {
       user: process.env.ADMIN_USER,
-      pass: process.env.ADMIN_PASS
+      pass: process.env.ADMIN_PASS,
+    },
+    {
+      user: process.env.ADMIN_USER + 'r',
+      pass: process.env.ADMIN_PASS,
+      readOnly: true
     }
   ]
 }, options)
