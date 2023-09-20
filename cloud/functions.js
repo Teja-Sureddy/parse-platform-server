@@ -33,6 +33,7 @@ Parse.Cloud.beforeSave(Parse.User, request => {
     }
     else{
         const acl = new Parse.ACL();
+        acl.setRoleReadAccess("admin", true);
         acl.setRoleWriteAccess("admin", true);
         acl.setPublicReadAccess(false);
         acl.setPublicWriteAccess(false);
